@@ -3,20 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Laporan; // Panggil Model Laporan
 
 class LaporBanjirController extends Controller
 {
-public function index()
+    public function index()
     {
+        // Data default (jika masih ingin ditampilkan bersama data database)
         $laporansDefault = [
             ['nama' => 'Budi Santoso', 'kecamatan' => 'Dayeuhkolot', 'desa' => 'Citeureup', 'tinggi_genangan' => 25],
             ['nama' => 'Siti Aminah', 'kecamatan' => 'Baleendah', 'desa' => 'Andir', 'tinggi_genangan' => 50],
             ['nama' => 'Asep Saepudin', 'kecamatan' => 'Bojongsoang', 'desa' => 'Ciganitri', 'tinggi_genangan' => 85],
         ];
 
-        $laporanSession = session()->get('laporans_baru', []);
+        // Ambil data dari database melalui Model Laporan (diubah dari session ke database)
+        $laporanDatabase = Laporan::all()->toArray();
 
-        $laporans = array_merge($laporanSession, $laporansDefault);
+        // Gabungkan data database dengan data default (atau gunakan Laporan::all() saja jika murni dari database)
+        $laporans = array_merge($laporanDatabase, $laporansDefault);
 
         return view('lapor-banjir.index', compact('laporans'));
     }
@@ -35,12 +39,12 @@ public function index()
             'tinggi_genangan' => 'required|numeric|min:1',
         ]);
 
-        $laporanSession = session()->get('laporans_baru', []);
-        array_unshift($laporanSession, $validated); 
-        session()->put('laporans_baru', $laporanSession);
+        // Simpan data langsung ke database menggunakan Model Laporan::create
+        $laporanBaru = Laporan::create($validated);
 
+        // Tampilkan halaman konfirmasi dengan data yang baru saja disimpan
         return view('lapor-banjir.konfirmasi', [
-            'laporan' => $validated
+            'laporan' => $laporanBaru
         ]);
     }
 }

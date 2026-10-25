@@ -12,7 +12,6 @@ class LaporanSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // Pilihan kecamatan di Kabupaten Bandung sesuai ketentuan
         $lokasiBandung = [
             'Dayeuhkolot, Kab. Bandung',
             'Baleendah, Kab. Bandung',

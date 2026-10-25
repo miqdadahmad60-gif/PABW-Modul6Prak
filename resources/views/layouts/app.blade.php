@@ -26,8 +26,24 @@
     <header>
         <h2>BPBD Kab. Bandung - LaporBanjir</h2>
         <nav>
-            <a href="{{ route('lapor.index') }}">Daftar Laporan</a>
+            <!-- Tombol Buat Laporan selalu tampil untuk umum/warga -->
             <a href="{{ route('lapor.form') }}">Buat Laporan</a>
+
+            <!-- Jika pengguna BELUM login -->
+            @guest
+                <a href="{{ route('login') }}">Login</a>
+                <a href="{{ route('register') }}">Register</a>
+            @endguest
+
+            <!-- Jika pengguna SUDAH login (Petugas) -->
+            @auth
+                <a href="{{ route('lapor.index') }}">Daftar Laporan</a>
+                <a href="{{ route('profil') }}">Profil Petugas</a>
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" style="background: none; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 100%; padding: 0; margin-left: 15px;">Logout</button>
+                </form>
+            @endauth
         </nav>
     </header>
 
